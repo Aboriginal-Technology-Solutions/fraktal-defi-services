@@ -1,2 +1,2 @@
-# fraktal-defi-services
+# Fraktal DeFi Services
 Tools to make DeFi more manageable...
