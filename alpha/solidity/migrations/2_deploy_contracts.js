@@ -12,7 +12,7 @@ module.exports = async function (deployer) {
   await deployer.deploy(FraktaFinancial)
   const fraktaFinancial = FraktaFinancial.deployed()
   
-  contract.fraktaFinancial = fraktaFinancial.address
+  contracts.fraktaFinancial = fraktaFinancial.address
 
 
 }

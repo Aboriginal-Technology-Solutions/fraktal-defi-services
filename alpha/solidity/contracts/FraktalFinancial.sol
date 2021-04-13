@@ -91,7 +91,7 @@ contract FraktaFinancial {
     contractLen++;
     emit AddedContract(_name, _address, _network);
   }
-  function getContractByName (string memory _name) public view returns(string memory , address _address, uint _network) {
+  function getContractByName (string memory name) public view returns(string memory _name, address _address, uint _network) {
     uint _contract;
     uint i;
     uint len = contractLen;
@@ -99,14 +99,14 @@ contract FraktaFinancial {
 
     require(contractLen > 0, 'No contracts found');
     for (i = 0; i < len; i++) {
-      if (keccak256(abi.encodePacked(contracts[i]._name)) == keccak256(abi.encodePacked(_name))) {
+      if (keccak256(abi.encodePacked(contracts[i]._name)) == keccak256(abi.encodePacked(name))) {
         hasContract = true;
         _contract = i;
       }
     }
     require(hasContract, 'Contract not found');
 
-    // return contracts[_contract]._name;
+    _name = contracts[_contract]._name;
     _address = contracts[_contract]._address;
     _network = contracts[_contract]._network;
   }
