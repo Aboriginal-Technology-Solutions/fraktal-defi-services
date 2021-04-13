@@ -50,9 +50,9 @@ contract FraktaFinancial {
     admins.push(_newAdmin);
     return true;
   }
-  function updateToken (address _token) public onlyAdmin () {
-    token = _token;
-  }
+  // function addToken (string _symbol, address _address, uint _decimals, uint _network) public onlyAdmin () {
+  //   token = _token;
+  // }
   function updateComptroller (address _comptroller) public onlyAdmin () {
     comptroller = _comptroller;
   }
@@ -109,6 +109,25 @@ contract FraktaFinancial {
     _name = contracts[_contract]._name;
     _address = contracts[_contract]._address;
     _network = contracts[_contract]._network;
+  }
+  function getToken (string memory _symbol) public returns(string memory symbol, address _address, uint decimals, uint network) { 
+    uint _tokenId;
+    uint i;
+    uint len = tokenLen;
+    bool hasToken = false;
+
+    for (i; i < len; i++) {
+      if (keccak256(abi.encodePacked(tokens[i]._symbol)) == keccak256(abi.encodePacked(_symbol))) {
+        hasToken = true;
+        _tokenId = i;
+      }
+
+    } 
+    require(hasToken, 'Token not found');
+    symbol = tokens[_tokenId]._symbol;
+    _address = tokens[_tokenId]._address;
+    decimals = tokens[_tokenId]._decimals;
+    network = tokens[_tokenId]._network;
   }
   ///////////////
   // Modifiers //

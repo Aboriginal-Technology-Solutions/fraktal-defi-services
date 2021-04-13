@@ -31,6 +31,25 @@
  *  Base HD Path:  m/44'/60'/0'/0/{account_index}
  *  
  */
+
+ /**
+  * {
+  *   "name": "1INCH Token on xDai",
+  *   "address": "0x7f7440C5098462f833E123B44B8A03E1d9785BAb",
+  *   "symbol": "1INCH",
+  *   "decimals": 18,
+  *   "chainId": 100,
+  *   "logoURI": "https://etherscan.io/token/images/1inch_32.png"
+  * },
+  * {
+  *   "name": "AAH on xDai",
+  *   "address": "0x99deb53501ac9b1c9f386f628f284b5cd8b107b9",
+  *   "symbol": "AAH",
+  *   "decimals": 18,
+  *   "chainId": 100,
+  *   "logoURI": "https://pbs.twimg.com/profile_images/1365887727330279424/aofb7sV6_400x400.jpg"
+  * },
+  */
 const FraktaFinancial = artifacts.require("FraktaFinancial.sol");
 
 const pk = `0xc3919ed505dd48da1926f9ca42fab2c2a9373951b31fc409fe82ca2113d815ca`
@@ -81,6 +100,19 @@ contract("FraktaFinancial", async accounts => {
     // const honeyswapRouter = await fraktaFinancial.getContractByName.call(honeyswap.router)
 
     assert.equal(honeyswap.factory, honeyswapFactory._address, 'NOT honeyswap -> ' + JSON.stringify(honeyswapFactory, '', 2))
+    // assert.equal(honeyswap.router, honeyswapRouter, 'NOT honeyswap ->' + honeyswapRouter)
+
+  })
+  it("Should add and retrieve a token", async () => {
+    const fraktaFinancial = await  FraktaFinancial.deployed()
+
+    await fraktaFinancial.addToken('1INCH', `0x7f7440C5098462f833E123B44B8A03E1d9785BAb`, 18, 100)
+    await fraktaFinancial.addToken('AAH', `0x99deb53501ac9b1c9f386f628f284b5cd8b107b9`, 18, 100)
+
+    const _1inchToken = await fraktaFinancial.getToken.call('1INCH')
+    // const honeyswapRouter = await fraktaFinancial.getContractByName.call(honeyswap.router)
+
+    assert.equal(`0x7f7440C5098462f833E123B44B8A03E1d9785BAb`, _1inchToken._address, 'NOT honeyswap -> ' + JSON.stringify(_1inchToken, '', 2))
     // assert.equal(honeyswap.router, honeyswapRouter, 'NOT honeyswap ->' + honeyswapRouter)
 
   })
