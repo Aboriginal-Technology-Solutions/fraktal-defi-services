@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  solidity:
+    images: node
+    env_file:
+      - .env
+    volumes:
+      - ./solidity:/home/node/app
+    user: node
+    command: yarn truffle
+    working_dir: /home/node/app
+  ganache:
+    images: node
+    env_file:
+      - .env
+    volumes:
+      - ./solidity:/home/node/app
+    user: node
+    command: yarn ganache-cli
+    working_dir: /home/node/app
+   

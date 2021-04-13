@@ -62,6 +62,10 @@ const honeyswap = {
   factory: `0xA818b4F111Ccac7AA31D0BCc0806d64F2E0737D7`,
   router: `0x1C232F01118CB8B424793ae03F870aa7D0ac7f77`
 }
+const bao = {
+  masterFramer: `0xf712a82DD8e2Ac923299193e9d6dAEda2d5a32fd`
+}
+
 contract("FraktaFinancial", async accounts => {
 
   it("Should retrieve owner address", async () => {
@@ -71,7 +75,7 @@ contract("FraktaFinancial", async accounts => {
     assert.equal(signerAddress, owner, `NOT OWNER: ${owner}`)
 
   });
-
+  
   it("Should add a comptroller and retrieve the compotroller address", async () => {
 
     const fraktaFinancial = await  FraktaFinancial.deployed()
@@ -90,6 +94,14 @@ contract("FraktaFinancial", async accounts => {
     assert.equal(admin1, admins[0], 'NOT ADMIN ' + admins[0])
     assert.equal(admin2, admins[1], 'NOT ADMIN ' + admins[1])
   });
+  it("Should transfer owner", async () => {
+    const fraktaFinancial = await  FraktaFinancial.deployed()
+    const owner = await fraktaFinancial.getOwner.call()
+    assert.equal(signerAddress, owner, `NOT OWNER: ${owner}`)
+    await fraktaFinancial.transferOwner(admin2)
+    // assert.equal(admin2, owner, `NOT OWNER: ${owner}`)
+
+  })
   it("Should add and retrieve contract info", async () => {
     const fraktaFinancial = await  FraktaFinancial.deployed()
 
@@ -116,4 +128,6 @@ contract("FraktaFinancial", async accounts => {
     // assert.equal(honeyswap.router, honeyswapRouter, 'NOT honeyswap ->' + honeyswapRouter)
 
   })
+
+
 });
