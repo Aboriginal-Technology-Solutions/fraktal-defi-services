@@ -1,7 +1,16 @@
 version: "3.7"
 services:
+  cli:
+    image: node
+    env_file:
+      - .env
+    volumes:
+      - ./cli:/home/node/app
+    user: node
+    command: yarn sev
+    working_dir: /home/node/app
   solidity:
-    images: node
+    image: node
     env_file:
       - .env
     volumes:
@@ -10,7 +19,7 @@ services:
     command: yarn truffle
     working_dir: /home/node/app
   ganache:
-    images: node
+    image: node
     env_file:
       - .env
     volumes:
@@ -18,4 +27,9 @@ services:
     user: node
     command: yarn ganache-cli
     working_dir: /home/node/app
-   
+networks:
+  backend:
+
+  xdai:
+    external:
+      name: nethermind-xdai
