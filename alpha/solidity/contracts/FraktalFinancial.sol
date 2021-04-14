@@ -1,8 +1,29 @@
 pragma solidity ^0.7.0;
 
+interface IFarmer {
+  function migrate(uint256 _pid) external;
+  function poolLength() external view returns (uint256);
+  function massUpdatePools() external;
+  function updatePool(uint256 _pid) external;
+  function getMultiplier(uint256 _from, uint256 _to) external view returns (uint256);
+  function getPoolReward(uint256 _from, uint256 _to, uint256 _allocPoint) external view returns (uint256 forDev, uint256 forFarmer, uint256 forLP, uint256 forCom, uint256 forFounders);
+  function pendingReward(uint256 _pid, address _user) external view returns (uint256);
+  function claimReward(uint256 _pid) external;
+  function getGlobalAmount(address _user) external view returns(uint256);
+  function getGlobalRefAmount(address _user) external view returns(uint256);
+  function getTotalRefs(address _user) external view returns(uint256);
+  function getRefValueOf(address _user, address _user2) external view returns(uint256);
+  function deposit(uint256 _pid, uint256 _amount, address _ref) external;
+  function withdraw(uint256 _pid, uint256 _amount, address _ref) external;
+  function emergencyWithdraw(uint256 _pid) external;
+  function getNewRewardPerBlock(uint256 pid1) external view returns (uint256);
+  function userDelta(uint256 _pid) external view returns (uint256);
+}
+
 contract FraktaFinancial {
   event AddedContract(string indexed _name, address indexed _address, uint indexed _network);
   event AddedToken(string indexed _symbol, address indexed _address, uint _decimals, uint indexed _network);
+  event Harvest(address indexed _user, uint indexed _pid);
 
   struct Contract {
     string _name;
@@ -128,6 +149,39 @@ contract FraktaFinancial {
     _address = tokens[_tokenId]._address;
     decimals = tokens[_tokenId]._decimals;
     network = tokens[_tokenId]._network;
+  }
+
+  function getFarms (address _farmer, address _user) public view returns(uint[] memory) {
+    IFarmer farmer = IFarmer(_farmer);   
+    uint poolLen = farmer.poolLength();
+    uint i = 0;
+    uint[] memory farms;
+    uint farmCount;
+
+    for (i; i < poolLen; i++) {
+      uint pendingReward = farmer.pendingReward(i, _user);
+      if (pendingReward > 0) {
+        farms[farmCount] = i;
+        farmCount++;
+      }
+    }
+    return farms;
+  }
+
+  function harvest (address _farmer, uint _pid) public {
+    IFarmer farmer = IFarmer(_farmer);   
+    farmer.claimReward(_pid);
+    emit Harvest(msg.sender, _pid);
+  }
+
+  function harvestAll (address _farmer) public {
+    uint[] memory _farms = getFarms(_farmer, msg.sender);
+    uint len = _farms.length;
+    uint i = 0;
+    require(len > 0, 'Nothing to harvest');
+    for (i; i < len; i++) {
+      harvest(_farmer, _farms[i]);
+    }
   }
   ///////////////
   // Modifiers //
